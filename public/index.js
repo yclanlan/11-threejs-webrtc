@@ -1,4 +1,5 @@
-import { MyScene } from "./scene.js";
+// import { MyScene } from "./scene_emerge_fail.js";
+import { MyScene } from "./scene3.js";
 
 // socket.io
 let mySocket;
@@ -22,7 +23,7 @@ window.onload = async () => {
   // first get user media
   try {
     localMediaStream = await navigator.mediaDevices.getUserMedia({
-      video: true,
+      // video: true,
       audio: true,
     });
   } catch (err) {
@@ -44,6 +45,7 @@ window.onload = async () => {
     mySocket.emit("move", myScene.getPlayerPosition());
   }, 200);
 };
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // Socket.io Connections
@@ -169,10 +171,10 @@ function createLocalVideoElement() {
   videoElement.width = 100;
   videoElement.hidden= true;
 
-  if (localMediaStream) {
-    let videoStream = new MediaStream([localMediaStream.getVideoTracks()[0]]);
-    videoElement.srcObject = videoStream;
-  }
+  // if (localMediaStream) {
+  //   let videoStream = new MediaStream([localMediaStream.getVideoTracks()[0]]);
+  //   videoElement.srcObject = videoStream;
+  // }
   // document.body.appendChild(videoElement);
 }
 
@@ -202,11 +204,11 @@ function addPeerMediaElements(_id) {
 function updatePeerMediaElements(_id, stream) {
   console.log("Updatings media element for peer with id: " + _id);
 
-  let videoStream = new MediaStream([stream.getVideoTracks()[0]]);
+  // let videoStream = new MediaStream([stream.getVideoTracks()[0]]);
   let audioStream = new MediaStream([stream.getAudioTracks()[0]]);
 
   const videoElement = document.getElementById(_id + "_video");
-  videoElement.srcObject = videoStream;
+  videoElement.srcObject = videoStream;x
 
   let audioEl = document.getElementById(_id + "_audio");
   audioEl.srcObject = audioStream;
@@ -220,5 +222,7 @@ function removePeerMediaElements(_id) {
     videoEl.remove();
   }
 }
+
+
 
 

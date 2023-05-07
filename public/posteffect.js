@@ -1,6 +1,7 @@
 			import * as THREE from 'three';
 
 			// import Stats from 'three/addons/libs/stats.module.js';
+			// import { Stats } from 'three/addons/libs/stats.module.js';
 			import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 			import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 			import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -25,7 +26,6 @@
 			function init() {
 
 				// const container = document.getElementById( 'container' );
-
 				// stats = new Stats();
 				// container.appendChild( stats.dom );
 
@@ -49,10 +49,11 @@
 				controls.minDistance = 1;
 				controls.maxDistance = 10;
 
-				// scene.add( new THREE.AmbientLight( 0x404040 ) );
+				scene.add( new THREE.AmbientLight( 0x404040 ) );
 
-				// const pointLight = new THREE.PointLight( 0xffffff, 1 );
-				// camera.add( pointLight );
+				const pointLight = new THREE.PointLight( 0xffffff, 2 );
+				 //add light to camera!
+				camera.add( pointLight );
 
 				const renderScene = new RenderPass( scene, camera );
 
