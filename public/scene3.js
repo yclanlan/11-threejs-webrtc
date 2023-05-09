@@ -15,7 +15,7 @@ export class MyScene {
   constructor() {
 
     this.avatars = {};
- 
+    this.gui = new GUI();
     this.scene = new THREE.Scene();
     this.scene.fog = new THREE.FogExp2( 0x64B4FD, 0.005 );
     this.cssScene = new THREE.Scene();
@@ -68,8 +68,8 @@ export class MyScene {
     this.frameCount = 0;
     this.loop();
 
-    // window.addEventListener('resize', ()=> {this.onWindowResize()}, false );
-    window.addEventListener('resize', this.onWindowResize, false );
+    window.addEventListener('resize', ()=> {this.onWindowResize()}, false );
+    // window.addEventListener('resize', this.onWindowResize, false );
     // window.addEventListener('resize', function(){console.log(this)}, false );
     // window.addEventListener('resize', ()=>{console.log(this)}, false );
 
@@ -227,15 +227,19 @@ export class MyScene {
 
       ////////////////// video screen //////////////////
       this.videoCollection=[
-        './sodagreen.mp4',
         './500.mp4',
+        './Jay.mp4',
+        './Adele.mp4',
+        './blackpink.mp4',
+        './sodagreen.mp4'
       ]
+
       //Create your video texture:
       this.video = document.getElementById('video');
       this.video.src= this.videoCollection[0];
     
       this.video.play();
-      // this.video.volume(1);
+      this.video.volume=0.1;
       // this.video.pause();
 
       this.videoTexture = new THREE.VideoTexture(this.video);
@@ -273,12 +277,18 @@ export class MyScene {
       this.scene.add(this.stageMesh); 
 
 
-      this.gui = new GUI();
-      this.gui.add(this.video,'volume',0,1,0.01).name('volume');
-      // this.gui.add(this.video,'src',["./sodagreen.mp4", "./500.mp4"]).name('track')
-      this.gui.add({currentSong:''},'currentSong',["sodagreen", "500"]).setValue("sodagreen").name('track').onChange((e)=>{
-        console.log(e);
+      
+      this.gui.add(this.video,'volume',0,1,0.01).name('volume');      
+      this.gui.add(
+        {currentSong:''},'currentSong',
+        [ "500","jay","Adele","blackpink","sodagreen"]).setValue(" Change Song ").name('track').onChange((e)=>{
+        console.log("e="+e);
         this.video.src = './' + e + '.mp4';
+        document.getElementById("video").play();
+        // mySocket.emit("playSong", e + '.mp4');
+        // console.log(this.gui.children[0]);
+        
+        console.log(this.gui.children[1].object);
       })
 
       // this.gui.onChange( function(value ){
@@ -385,7 +395,9 @@ export class MyScene {
     // });
 
     let otherMat = new THREE.MeshPhongMaterial({ color: 0xffffff });
-    let head = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.5, 0.5), [
+    let head = new THREE.Mesh(
+      new THREE.BoxGeometry(0.5, 0.5, 0.5), 
+    [
       otherMat,
       otherMat,
       otherMat,
@@ -395,6 +407,7 @@ export class MyScene {
       // videoMaterial,
     ]);
 
+  
     // set position of head before adding to parent object
     head.position.set(0, 0, 0);
 
@@ -461,6 +474,16 @@ export class MyScene {
     ];
   }
 
+  onWindowResize() {
+    console.log(this);
+    console.log(this.camera);
+    this.camera.aspect = window.innerWidth / window.innerHeight;
+    
+    this.camera.updateProjectionMatrix();
+  
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+  
+    };
 
 
 
@@ -525,14 +548,6 @@ export class MyScene {
 
   }
 
-  onWindowResize() {
-    console.log(this)
-    this.camera.aspect = window.innerWidth / window.innerHeight;
-    this.camera.updateProjectionMatrix();
-  
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
-  
-    };
 
   
 }

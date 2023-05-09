@@ -33,17 +33,17 @@ window.onload = async () => {
 
   createLocalVideoElement();
 
-  //  create the threejs scene
-  console.log("Creating three.js scene...");
-  myScene = new MyScene();
-
   // finally create the websocket connection
   establishWebsocketConnection();
+
+    //  create the threejs scene
+    console.log("Creating three.js scene...");
+    myScene = new MyScene();
 
   // start sending position data to the server
   setInterval(() => {
     mySocket.emit("move", myScene.getPlayerPosition());
-  }, 200);
+  }, 10);
 };
 
 
@@ -57,6 +57,54 @@ function establishWebsocketConnection() {
 
   mySocket.on("connect", () => {
     console.log("My socket ID is", mySocket.id);
+
+    //client side channel
+    mySocket.on("askToPlay",()=>{
+      //
+      document.getElementById("video").play();
+      mySocket.emit("playSong", "500.mp4");
+
+    });
+
+    mySocket.on("sendCurrentSong",currentSong=>{
+      //
+      console.log('receive song data')
+      console.log(currentSong)
+      let videoEl = document.getElementById("video");
+      videoEl.play();
+      setTimeout(()=>{
+        let timeDiff = (new Date().getTime() - currentSong.startTime)/1000;
+        console.log(timeDiff)
+        document.getElementById("video").currentTime = timeDiff;
+      },1000)
+      console.log(myScene.gui.children);
+      // try yo figure out how to detect the gui changed
+      // console.log (myScene.gui.children); 
+    });
+
+
+    //how to select the correct one and detected changes ><
+    //if (gui的第二個的track改變){
+    //客戶端.emit(播歌,播gui第二個選項裡面，現在被改到的這首);
+    //}
+
+    if(myScene.gui.changed ){
+      console.log("changed song");
+      mySocket.emit("playSong",myScene.gui);
+      //gui childern[1],or controller?
+     }
+    
+
+    
+
+
+
+
+
+
+
+
+
   });
 
   mySocket.on("introduction", (peerInfo) => {
@@ -165,11 +213,11 @@ function createPeerConnection(theirSocketId, isInitiator = false) {
 // Media DOM Elements
 
 function createLocalVideoElement() {
-  const videoElement = document.createElement("video");
-  videoElement.id = "local_video";
-  videoElement.autoplay = true;
-  videoElement.width = 100;
-  videoElement.hidden= true;
+  // const videoElement = document.createElement("video");
+  // videoElement.id = "local_video";
+  // videoElement.autoplay = true;
+  // videoElement.width = 100;
+  // videoElement.hidden= true;
 
   // if (localMediaStream) {
   //   let videoStream = new MediaStream([localMediaStream.getVideoTracks()[0]]);
@@ -181,12 +229,12 @@ function createLocalVideoElement() {
 function addPeerMediaElements(_id) {
   // console.log("Adding media element for peer with id: " + _id);
 
-  let videoElement = document.createElement("video");
-  videoElement.id = _id + "_video";
-  videoElement.autoplay = true;
-  videoElement.style = "visibility: hidden;";
+  // let videoElement = document.createElement("video");
+  // videoElement.id = _id + "_video";
+  // videoElement.autoplay = true;
+  // videoElement.style = "visibility: hidden;";
 
-  document.body.appendChild(videoElement);
+  // document.body.appendChild(videoElement);
 
   // create audio element for peer
   let audioEl = document.createElement("audio");
@@ -207,8 +255,8 @@ function updatePeerMediaElements(_id, stream) {
   // let videoStream = new MediaStream([stream.getVideoTracks()[0]]);
   let audioStream = new MediaStream([stream.getAudioTracks()[0]]);
 
-  const videoElement = document.getElementById(_id + "_video");
-  videoElement.srcObject = videoStream;x
+  // const videoElement = document.getElementById(_id + "_video");
+  // videoElement.srcObject = videoStream;
 
   let audioEl = document.getElementById(_id + "_audio");
   audioEl.srcObject = audioStream;
@@ -217,10 +265,10 @@ function updatePeerMediaElements(_id, stream) {
 function removePeerMediaElements(_id) {
   console.log("Removing media element for peer with id: " + _id);
 
-  let videoEl = document.getElementById(_id + "_video");
-  if (videoEl != null) {
-    videoEl.remove();
-  }
+  // let videoEl = document.getElementById(_id + "_video");
+  // if (videoEl != null) {
+  //   videoEl.remove();
+  // }
 }
 
 
