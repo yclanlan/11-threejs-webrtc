@@ -73,6 +73,34 @@ export class MyScene {
     // window.addEventListener('resize', function(){console.log(this)}, false );
     // window.addEventListener('resize', ()=>{console.log(this)}, false );
 
+    this.videoCollection=[
+      './500.mp4',
+      './Jay.mp4',
+      './Adele.mp4',
+      './blackpink.mp4',
+      './sodagreen.mp4'
+    ]
+
+    //Create your video texture:
+    this.video = document.getElementById('video');
+    this.video.src= this.videoCollection[0];
+
+    this.video.play();
+      this.video.volume=0.1;
+      // this.video.pause();
+
+      this.videoTexture = new THREE.VideoTexture(this.video);
+      this.videoTexture.needsUpdate = true;
+      this.videoMaterial = new THREE.MeshStandardMaterial( {
+
+        map: this.videoTexture, 
+        overdraw: true,
+        side: THREE.DoubleSide, 
+        toneMapped: false,
+        
+      } );
+      this.videoMaterial.needsUpdate = true;
+
   }
 
 
@@ -226,33 +254,33 @@ export class MyScene {
 
 
       ////////////////// video screen //////////////////
-      this.videoCollection=[
-        './500.mp4',
-        './Jay.mp4',
-        './Adele.mp4',
-        './blackpink.mp4',
-        './sodagreen.mp4'
-      ]
+      // this.videoCollection=[
+      //   './500.mp4',
+      //   './Jay.mp4',
+      //   './Adele.mp4',
+      //   './blackpink.mp4',
+      //   './sodagreen.mp4'
+      // ]
 
-      //Create your video texture:
-      this.video = document.getElementById('video');
-      this.video.src= this.videoCollection[0];
+      // //Create your video texture:
+      // this.video = document.getElementById('video');
+      // this.video.src= this.videoCollection[0];
     
-      this.video.play();
-      this.video.volume=0.1;
-      // this.video.pause();
+      // this.video.play();
+      // this.video.volume=0.1;
+      // // this.video.pause();
 
-      this.videoTexture = new THREE.VideoTexture(this.video);
-      this.videoTexture.needsUpdate = true;
-      this.videoMaterial = new THREE.MeshStandardMaterial( {
+      // this.videoTexture = new THREE.VideoTexture(this.video);
+      // this.videoTexture.needsUpdate = true;
+      // this.videoMaterial = new THREE.MeshStandardMaterial( {
 
-        map: this.videoTexture, 
-        overdraw: true,
-        side: THREE.DoubleSide, 
-        toneMapped: false,
+      //   map: this.videoTexture, 
+      //   overdraw: true,
+      //   side: THREE.DoubleSide, 
+      //   toneMapped: false,
         
-      } );
-      this.videoMaterial.needsUpdate = true;
+      // } );
+      // this.videoMaterial.needsUpdate = true;
 
       // Create screen
       this.screen = new THREE.PlaneGeometry(4*3.5, 3*3.5);

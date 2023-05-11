@@ -39,6 +39,8 @@ window.onload = async () => {
     //  create the threejs scene
     console.log("Creating three.js scene...");
     myScene = new MyScene();
+    console.log(myScene.video)
+
 
   // start sending position data to the server
   setInterval(() => {
@@ -65,22 +67,30 @@ function establishWebsocketConnection() {
       mySocket.emit("playSong", "500.mp4");
 
     });
+ 
 
-    mySocket.on("sendCurrentSong",currentSong=>{
+    mySocket.on("sendCurrentSong",(currentSong)=>{
       //
       console.log('receive song data')
-      console.log(currentSong)
+     
+      //myScene.video.src = './' + currentSong.name + '.mp4';
       let videoEl = document.getElementById("video");
+      videoEl.src = './' + currentSong.name + '.mp4';
       videoEl.play();
+      console.log(myScene.video.src)
+
+      
       setTimeout(()=>{
         let timeDiff = (new Date().getTime() - currentSong.startTime)/1000;
         console.log(timeDiff)
         document.getElementById("video").currentTime = timeDiff;
       },1000)
-      console.log(myScene.gui.children);
+
+      // console.log(myScene.gui.children);
       // try yo figure out how to detect the gui changed
       // console.log (myScene.gui.children); 
     });
+  
 
 
     //how to select the correct one and detected changes ><
@@ -88,23 +98,15 @@ function establishWebsocketConnection() {
     //客戶端.emit(播歌,播gui第二個選項裡面，現在被改到的這首);
     //}
 
-    if(myScene.gui.changed ){
-      console.log("changed song");
-      mySocket.emit("playSong",myScene.gui);
+    myScene.gui.onChange(()=>{
+      
+        let songName = myScene.gui.children[1].object.currentSong;
+        console.log(songName);
+        mySocket.emit("playSong",songName);
+    }) ;
+
       //gui childern[1],or controller?
-     }
-    
-
-    
-
-
-
-
-
-
-
-
-
+     
   });
 
   mySocket.on("introduction", (peerInfo) => {

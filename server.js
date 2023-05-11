@@ -45,6 +45,7 @@ io.on("connection", (socket) => {
   }else{
     console.log("Not first user, sending current song info");
     socket.emit("sendCurrentSong", currentSong);
+    console.log(currentSong)
   }
   
   socket.on("playSong",(songName)=>{ // play 或是切歌
@@ -53,8 +54,9 @@ io.on("connection", (socket) => {
       name: songName,
       startTime: new Date().getTime()
     }
-    console.log(currentSong);
-    socket.emit("sendCurrentSong",currentSong);
+    console.log(songName);
+    socket.broadcast.emit("sendCurrentSong",currentSong);
+    // socket.emit("sendCurrentSong",currentSong);
   })
   // socket.emit("sendCurrentSong", currentSong);
 
@@ -92,6 +94,14 @@ io.on("connection", (socket) => {
     io.sockets.emit("peerDisconnected", socket.id);
 
     delete peers[socket.id];
+
+    if(Object.keys(peers).length<1){
+      console.log('no one is here anymore');
+      currentSong = {
+        name: null,
+        startTime: null
+      }
+    }
   });
 });
 
